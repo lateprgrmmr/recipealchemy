@@ -1,0 +1,125 @@
+CREATE TYPE ingredient_type AS ENUM (
+  'meat',
+  'vegetable',
+  'fruit',
+  'dairy',
+  'grain',
+  'spice',
+  'other'
+);
+
+CREATE TABLE ingredient (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  TYPE ingredient_type NOT NULL DEFAULT 'other',
+  other_type VARCHAR(255),
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE cuisine (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO
+  cuisine (name)
+VALUES
+  ('African'),
+  ('American'),
+  ('Asian'),
+  ('Cajun'),
+  ('Caribbean'),
+  ('Chinese'),
+  ('Eastern European'),
+  ('Egyptian'),
+  ('French'),
+  ('German'),
+  ('Greek'),
+  ('Indian'),
+  ('Indonesian'),
+  ('Italian'),
+  ('Japanese'),
+  ('Jewish/Kosher'),
+  ('Korean'),
+  (
+    'Latin (Cuban, Dominican, Puerto Rican, South & Central American)'
+  ),
+  ('Mediterranean'),
+  ('Mexican'),
+  ('Middle Eastern'),
+  ('Russian'),
+  ('Southwestern'),
+  ('Thai'),
+  ('Other'),
+  ('Afghan'),
+  ('Armenian'),
+  ('Australian'),
+  ('Bagels/Pretzels'),
+  ('Bakery'),
+  ('Bangladeshi'),
+  ('Barbecue'),
+  ('Basque'),
+  (
+    'Bottled beverages, including water, sodas, juices, etc.'
+  ),
+  ('Brazilian'),
+  ('Cafe/Coffee/Tea'),
+  ('Californian'),
+  ('Chicken'),
+  ('Chilean'),
+  ('Chinese/Cuban'),
+  ('Chinese/Japanese'),
+  ('Continental'),
+  ('Creole'),
+  ('Creole/Cajun'),
+  ('Czech'),
+  ('Delicatessen'),
+  ('Vietnamese/Cambodian/Malaysia'),
+  ('Donuts'),
+  ('English'),
+  ('Ethiopian'),
+  ('Filipino'),
+  ('Fruits/Vegetables'),
+  ('Hamburgers'),
+  ('Hawaiian'),
+  ('Hotdogs'),
+  ('Hotdogs/Pretzels'),
+  ('Ice Cream, Gelato, Yogurt, Ices'),
+  ('Iranian'),
+  ('Irish'),
+  ('Juice, Smoothies, Fruit Salads'),
+  ('Moroccan'),
+  ('Nuts/Confectionary'),
+  ('Pakistani'),
+  ('Pancakes/Waffles'),
+  ('Peruvian'),
+  ('Pizza'),
+  ('Pizza/Italian'),
+  ('Polish'),
+  ('Polynesian'),
+  ('Portuguese'),
+  ('Salads'),
+  ('Sandwiches'),
+  ('Sandwiches/Salads/Mixed Buffet'),
+  ('Scandinavian'),
+  ('Seafood'),
+  ('Soul Food'),
+  ('Soups'),
+  ('Soups & Sandwiches'),
+  ('Spanish'),
+  ('Steak'),
+  ('Tapas'),
+  ('Tex-Mex'),
+  ('Turkish'),
+  ('Vegetarian'),
+  ('Not Listed/Not Applicable');
+
+CREATE TABLE ingredient_cuisine (
+  ingredient_id INTEGER NOT NULL REFERENCES ingredient(id),
+  cuisine_id INTEGER NOT NULL REFERENCES cuisine(id),
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (ingredient_id, cuisine_id)
+);
