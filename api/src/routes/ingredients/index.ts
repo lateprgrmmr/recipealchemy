@@ -6,9 +6,9 @@ const router = express.Router();
 router.get('/', async (req: Request, res: Response) => {
     const db = req.app.get('db');
     const ingredients: Ingredient[] = await db.ingredient.find();
-    if (ingredients.length === 0) {
-        return res.status(404).json({ error: "No ingredients found" });
-    }
+    // if (ingredients.length === 0) {
+    //     return [];
+    // }
     return res.json(ingredients);
 });
 

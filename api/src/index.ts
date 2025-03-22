@@ -2,6 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import { connectDb } from './database/connection';
+import cuisinesRouter from './routes/cuisines';
+import ingredientsRouter from './routes/ingredients';
 
 const APP_PORT = process.env.APP_PORT || 3000;
 
@@ -10,22 +12,8 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// app.get('/', (req, res) => {
-//     const db = req.app.get('db');
-//     const data = db.cuisine.find({});
-//     res.json(data);
-// });
-
-app.get('/', async (req, res) => {
-    try {
-        const db = req.app.get('db'); // Retrieve the db instance
-        const data = await db.cuisine.find({}); // Await the database query
-        res.json(data); // Send the query results as JSON
-    } catch (error) {
-        console.error("Error fetching data from cuisine table:", error);
-        res.status(500).send("Internal Server Error");
-    }
-});
+app.use('/cuisines', cuisinesRouter);
+app.use('/ingredients', ingredientsRouter);
 
 const startServer = async () => {
     const db = await connectDb();
