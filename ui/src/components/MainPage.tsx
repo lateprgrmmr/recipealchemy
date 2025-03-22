@@ -1,6 +1,7 @@
 import { makeStyles } from "@mui/styles";
 import Header from "./Header";
-import SearchInput from "./SearchInput";
+import { Grid2, Paper } from "@mui/material";
+import RecipeTable, { dummyData } from "./RecipeTable";
 
 const useStyles = makeStyles(({
     root: {
@@ -20,14 +21,14 @@ const MainRouter = () => {
     const classes = useStyles();
 
     return (
-        <div>
-            <Header />
-            <div className={classes.root}>
-                <div className={classes.mainWrapper}>
-                    <SearchInput />
-                </div>
-            </div>
-        </div>
+        <Paper className={classes.root}>
+            <Grid2 container className={classes.mainWrapper}>
+                <Header />
+                <Grid2 className="">
+                    <RecipeTable data={dummyData} />
+                </Grid2>
+            </Grid2>
+        </Paper>
     );
 }
 

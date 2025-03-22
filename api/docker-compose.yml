@@ -11,6 +11,7 @@ services:
       - POSTGRES_LOGGING=all
     volumes:
       - ./src/database/schema.sql:/docker-entrypoint-initdb.d/1_schema.sql
+      - ./src/database/staticData.sql:/docker-entrypoint-initdb.d/2_staticData.sql
       # - postgres_data:/var/lib/postgresql/data
 volumes:
   postgres_data:

@@ -5,121 +5,53 @@ CREATE TYPE ingredient_type AS ENUM (
   'dairy',
   'grain',
   'spice',
+  'herb',
+  'sauce',
   'other'
 );
 
 CREATE TABLE ingredient (
   id SERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
-  TYPE ingredient_type NOT NULL DEFAULT 'other',
+  type ingredient_type NOT NULL DEFAULT 'other'::ingredient_type,
   other_type VARCHAR(255),
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  deleted_at TIMESTAMP
 );
 
 CREATE TABLE cuisine (
   id SERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  deleted_at TIMESTAMP
+);
+
+CREATE TABLE recipe (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  cuisine_id INTEGER REFERENCES cuisine(id),
+  description TEXT,
+  instructions TEXT NOT NULL,
+  prep_time INTEGER CHECK (prep_time >= 0), -- in minutes
+  cook_time INTEGER CHECK (cook_time >= 0), -- in minutes
+  servings INTEGER CHECK (servings > 0),
+  difficulty INTEGER NOT NULL CHECK (difficulty >= 1 AND difficulty <= 5),
+  image_url VARCHAR(255),
+  dietary_restrictions VARCHAR(255),
+  is_ai_generated BOOLEAN DEFAULT FALSE,
+  ai_model_used TEXT,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-INSERT INTO
-  cuisine (name)
-VALUES
-  ('African'),
-  ('American'),
-  ('Asian'),
-  ('Cajun'),
-  ('Caribbean'),
-  ('Chinese'),
-  ('Eastern European'),
-  ('Egyptian'),
-  ('French'),
-  ('German'),
-  ('Greek'),
-  ('Indian'),
-  ('Indonesian'),
-  ('Italian'),
-  ('Japanese'),
-  ('Jewish/Kosher'),
-  ('Korean'),
-  (
-    'Latin (Cuban, Dominican, Puerto Rican, South & Central American)'
-  ),
-  ('Mediterranean'),
-  ('Mexican'),
-  ('Middle Eastern'),
-  ('Russian'),
-  ('Southwestern'),
-  ('Thai'),
-  ('Other'),
-  ('Afghan'),
-  ('Armenian'),
-  ('Australian'),
-  ('Bagels/Pretzels'),
-  ('Bakery'),
-  ('Bangladeshi'),
-  ('Barbecue'),
-  ('Basque'),
-  (
-    'Bottled beverages, including water, sodas, juices, etc.'
-  ),
-  ('Brazilian'),
-  ('Cafe/Coffee/Tea'),
-  ('Californian'),
-  ('Chicken'),
-  ('Chilean'),
-  ('Chinese/Cuban'),
-  ('Chinese/Japanese'),
-  ('Continental'),
-  ('Creole'),
-  ('Creole/Cajun'),
-  ('Czech'),
-  ('Delicatessen'),
-  ('Vietnamese/Cambodian/Malaysia'),
-  ('Donuts'),
-  ('English'),
-  ('Ethiopian'),
-  ('Filipino'),
-  ('Fruits/Vegetables'),
-  ('Hamburgers'),
-  ('Hawaiian'),
-  ('Hotdogs'),
-  ('Hotdogs/Pretzels'),
-  ('Ice Cream, Gelato, Yogurt, Ices'),
-  ('Iranian'),
-  ('Irish'),
-  ('Juice, Smoothies, Fruit Salads'),
-  ('Moroccan'),
-  ('Nuts/Confectionary'),
-  ('Pakistani'),
-  ('Pancakes/Waffles'),
-  ('Peruvian'),
-  ('Pizza'),
-  ('Pizza/Italian'),
-  ('Polish'),
-  ('Polynesian'),
-  ('Portuguese'),
-  ('Salads'),
-  ('Sandwiches'),
-  ('Sandwiches/Salads/Mixed Buffet'),
-  ('Scandinavian'),
-  ('Seafood'),
-  ('Soul Food'),
-  ('Soups'),
-  ('Soups & Sandwiches'),
-  ('Spanish'),
-  ('Steak'),
-  ('Tapas'),
-  ('Tex-Mex'),
-  ('Turkish'),
-  ('Vegetarian'),
-  ('Not Listed/Not Applicable');
-
-CREATE TABLE ingredient_cuisine (
-  ingredient_id INTEGER NOT NULL REFERENCES ingredient(id),
-  cuisine_id INTEGER NOT NULL REFERENCES cuisine(id),
+CREATE TABLE recipe_ingredient (
+  recipe_id INTEGER NOT NULL REFERENCES recipe(id) ON DELETE CASCADE,
+  ingredient_id INTEGER NOT NULL REFERENCES ingredient(id) ON DELETE CASCADE,
+  quantity INTEGER NOT NULL,
+  unit VARCHAR(50) NOT NULL,
+  notes TEXT,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (ingredient_id, cuisine_id)
+  PRIMARY KEY (recipe_id, ingredient_id)
 );
