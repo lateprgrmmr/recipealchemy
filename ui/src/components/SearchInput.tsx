@@ -7,11 +7,8 @@ import { Cuisine, Ingredient } from "../shared/types";
 const SearchInput = () => {
     const [ingredients, setIngredients] = useState<Ingredient[]>([]);
     const [selectedIngredients, setSelectedIngredients] = useState<string[]>([]);
-    const [ingredientName, setIngredientName] = useState<string[]>([]);
     const [cuisines, setCuisines] = useState<Cuisine[]>([]);
     const [selectedCuisines, setSelectedCuisines] = useState<string[]>([]);
-    const [cuisineName, setCuisineName] = useState<string[]>([]);
-    const [search, setSearch] = useState<string>("");
 
     useEffect(() => {
         // Fetch ingredients and cuisines from the API

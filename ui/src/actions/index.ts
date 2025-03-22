@@ -31,7 +31,6 @@ function buildRequest(
 }
 
 async function sendRequest(url: string, options: RequestInit): Promise<Response | null> {
-    const startTime = Date.now();
     try {
         const response = await fetch(url, options);
         return response;

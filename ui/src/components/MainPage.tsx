@@ -1,8 +1,4 @@
 import { makeStyles } from "@mui/styles";
-import { Route, Routes } from "react-router-dom";
-import { ErrorBoundary } from "react-error-boundary";
-import { Suspense } from "react";
-import ErrorPage from "./ErrorPage";
 import Header from "./Header";
 import SearchInput from "./SearchInput";
 
