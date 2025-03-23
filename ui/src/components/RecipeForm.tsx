@@ -2,7 +2,22 @@
 
 import type React from "react"
 import { useState } from "react"
-import { Box, FormControl, InputLabel, Select, MenuItem, Chip, OutlinedInput, Typography, Paper, SelectChangeEvent, Checkbox, ListItemText } from "@mui/material"
+import {
+    Box,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
+    Chip,
+    OutlinedInput,
+    Typography,
+    Paper,
+    SelectChangeEvent,
+    Checkbox,
+    ListItemText,
+    Grid,
+    TextField
+} from "@mui/material"
 import { Cuisine, Ingredient, IngredientType } from "../shared/types"
 
 interface FormProps {
@@ -16,6 +31,9 @@ const RecipeForm = (props: FormProps) => {
     const [selectedCuisines, setSelectedCuisines] = useState<string[]>([])
     const [selectedIngredients, setSelectedIngredients] = useState<string[]>([])
     const [selectedIngredientTypes, setSelectedIngredientTypes] = useState<string[]>([])
+    const [recipeName, setRecipeName] = useState("")
+    const [description, setDescription] = useState("")
+    const [instructions, setInstructions] = useState("")
 
     const handleChange = <T,>(
         event: SelectChangeEvent<T[]>,
@@ -28,6 +46,9 @@ const RecipeForm = (props: FormProps) => {
     const getSelectionJson = () => {
         return JSON.stringify(
             {
+                recipeName,
+                description,
+                instructions,
                 cuisines: selectedCuisines,
                 ingredientTypes: selectedIngredientTypes,
                 ingredients: selectedIngredients,
@@ -38,11 +59,42 @@ const RecipeForm = (props: FormProps) => {
     }
 
     return (
-        <Box sx={{ maxWidth: 600, margin: "auto", padding: 3 }}>
-            <Typography variant="h4" gutterBottom>
-                Cuisine and Ingredient Filter
+        <Box sx={{ maxWidth: 1000, margin: "auto", padding: 3 }}>
+            <Grid container spacing={3}>
+                <Grid xs={12} sm={6}>
+                    <Typography variant="h6" gutterBottom>
+                        Recipe Details
+                    </Typography>
+                    <TextField
+                        fullWidth
+                        label="Recipe Name"
+                        value={recipeName}
+                        onChange={(e) => setRecipeName(e.target.value)}
+                        margin="normal"
+                    />
+                    <TextField
+                        fullWidth
+                        label="Description"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        margin="normal"
+                        multiline
+                        rows={3}
+                    />
+                    <TextField
+                        fullWidth
+                        label="Instructions"
+                        value={instructions}
+                        onChange={(e) => setInstructions(e.target.value)}
+                        margin="normal"
+                        multiline
+                        rows={5}
+                    />
+                </Grid>
+            </Grid>
+            <Typography variant="h6" gutterBottom>
+                Recipe Details
             </Typography>
-
             <FormControl fullWidth margin="normal">
                 <InputLabel id="cuisines-label">Cuisines</InputLabel>
                 <Select
