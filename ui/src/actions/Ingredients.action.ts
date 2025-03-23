@@ -14,3 +14,17 @@ export const fetchIngredients = async () => {
         return [];
     }
 };
+
+export const fetchIngredientTypes = async () => {
+    try {
+        console.log('Fetching ingredient types...');
+        const ingredientTypes = await getFromApi<Ingredient[]>('http://localhost:5001/ingredients/types');
+        if (!ingredientTypes) {
+            throw new Error('Network response was not ok');
+        }
+        console.log('Fetched ingredient types:', ingredientTypes);
+        return ingredientTypes;
+    } catch (error) {
+        return [];
+    }
+}

@@ -1,15 +1,25 @@
 import express, { Request, Response } from "express";
 import { Ingredient } from "../../shared/types";
+import { getIngredients, getIngredientTypes } from "./api";
 
 const router = express.Router();
 
 router.get('/', async (req: Request, res: Response) => {
     const db = req.app.get('db');
-    const ingredients: Ingredient[] = await db.ingredient.find();
-    // if (ingredients.length === 0) {
-    //     return [];
-    // }
+    const ingredients: Ingredient[] = await getIngredients(db);
+    if (ingredients.length === 0) {
+        return [];
+    }
     return res.json(ingredients);
+});
+
+router.get('/types', async (req: Request, res: Response) => {
+    const db = req.app.get('db');
+    const ingredientTypes = await getIngredientTypes(db);
+    if (ingredientTypes.length === 0) {
+        return [];
+    }
+    return res.json(ingredientTypes);
 });
 
 router.post('/', async (req: Request, res: Response) => {

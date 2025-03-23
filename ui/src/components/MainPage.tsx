@@ -1,10 +1,12 @@
 import { makeStyles } from "@mui/styles";
 import Header from "./Header";
-import { Grid2, Paper } from "@mui/material";
+import { Grid2 } from "@mui/material";
 import RecipeTable from "./RecipeTable";
 import { useEffect, useState } from "react";
-import { fetchRecipes } from "../actions/Recipe.action";
-import { TableData } from "../shared/types";
+import { Cuisine, Ingredient, IngredientType } from "../shared/types";
+import RecipeForm from "./RecipeForm";
+import { fetchIngredients, fetchIngredientTypes } from "../actions/Ingredients.action";
+import { fetchCuisines } from "../actions/Cuisine.action";
 
 const useStyles = makeStyles(({
     root: {
@@ -21,31 +23,50 @@ const useStyles = makeStyles(({
 }), { name: 'MainRouter' });
 
 const MainRouter = () => {
-    const [data, setData] = useState<TableData[]>([]);
+    const [ingredients, setIngredients] = useState<Ingredient[]>([]);
+    const [ingredientTypes, setIngredientTypes] = useState<IngredientType[]>([]);
+    const [cuisines, setCuisines] = useState<Cuisine[]>([]);
+
     const classes = useStyles();
 
     useEffect(() => {
         const getData = async () => {
-            const response = await fetchRecipes();
-            console.log('response', response);
-            if (!response) {
-                setData([]);
+            const ingredientResp = await fetchIngredients();
+            const ingredientTypeResp = await fetchIngredientTypes();
+            const cuisineResp = await fetchCuisines();
+            if (!ingredientResp) {
+                setIngredients([]);
             }
-            setData(data);
+            if (!ingredientTypeResp) {
+                setIngredientTypes([]);
+            }
+            if (!cuisineResp) {
+                setCuisines([]);
+            }
+            setIngredients(ingredientResp);
+            setIngredientTypes(ingredientTypeResp);
+            setCuisines(cuisineResp);
         }
         getData();
-    }, [data]);
+    }, []);
 
-    console.log('Data:', data);
+    console.log('Ingredients:', ingredients);
+    console.log('Cuisines:', cuisines);
+    console.log('Ingredient Types:', ingredientTypes);
     return (
-        <Paper className={classes.root}>
-            <Grid2 container className={classes.mainWrapper}>
-                <Header />
-                <Grid2 className="">
-                    <RecipeTable />
-                </Grid2>
+        <Grid2 container className={`${classes.root}, ${classes.mainWrapper}`}>
+            <Header />
+            <Grid2 className="">
+                <RecipeForm
+                    cuisines={cuisines}
+                    ingredientTypes={ingredientTypes}
+                    allIngredients={ingredients}
+                />
             </Grid2>
-        </Paper>
+            <Grid2 className="">
+                <RecipeTable />
+            </Grid2>
+        </Grid2>
     );
 }
 

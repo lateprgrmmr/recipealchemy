@@ -25,16 +25,9 @@ export interface TableData {
     instructions: string;
 }
 
-export enum IngredientType {
-    MEAT = 'meat',
-    VEGETABLE = 'vegetable',
-    FRUIT = 'fruit',
-    DAIRY = 'dairy',
-    GRAIN = 'grain',
-    SPICE = 'spice',
-    HERB = 'herb',
-    SAUCE = 'sauce',
-    OTHER = 'other',
+export interface IngredientType {
+    id: number;
+    name: string;
 }
 
 export interface Ingredient {
@@ -76,6 +69,14 @@ export interface RecipeIngredient {
     unit?: string;
     notes?: string;
     created_at: Date;
+}
+
+export interface RecipeIngredientUx {
+    id: number;
+    name: string;
+    quantity: number;
+    unit: string;
+    notes: string;
 }
 
 export interface RecipeResponse { 
