@@ -37,7 +37,7 @@ CREATE TABLE recipe (
   prep_time INTEGER CHECK (prep_time >= 0), -- in minutes
   cook_time INTEGER CHECK (cook_time >= 0), -- in minutes
   servings INTEGER CHECK (servings > 0),
-  difficulty INTEGER NOT NULL CHECK (difficulty >= 1 AND difficulty <= 5),
+  difficulty VARCHAR(20) CHECK (difficulty IN ('easy', 'medium', 'hard')),
   image_url VARCHAR(255),
   dietary_restrictions VARCHAR(255),
   is_ai_generated BOOLEAN DEFAULT FALSE,

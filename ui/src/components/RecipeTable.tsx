@@ -1,28 +1,33 @@
-import { Box, Card, Typography } from "@mui/material";
+import { Box, Card, CircularProgress, Typography } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { TableData } from "../shared/types";
+import { Recipe } from "../shared/types";
+import { useEffect, useState } from "react";
+import { fetchRecipes } from "../actions/Recipe.action";
 
-export const dummyData: TableData[] = [
-    {
-        id: 1,
-        recipeName: "Spaghetti Bolognese",
-        ingredients: "Spaghetti, minced meat, tomato sauce",
-        instructions: "Cook spaghetti, fry meat, add sauce",
-    },
-    {
-        id: 2,
-        recipeName: "Chicken Curry",
-        ingredients: "Chicken, curry powder, coconut milk",
-        instructions: "Fry chicken, add curry, add coconut milk",
-    },
-];
+// interface RecipeTableProps {
+//     data: TableData[];
+// }
 
-interface RecipeTableProps {
-    data: TableData[];
-}
+const RecipeTable = () => {
+    const [data, setData] = useState<Recipe[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
 
-const RecipeTable = (props: RecipeTableProps) => {
-    const { data } = props;
+    useEffect(() => {
+        setLoading(true);
+        const getData = async () => {
+            const response = await fetchRecipes();
+            console.log('response', response);
+            if (response) {
+                setData(response);
+            } else {
+                setData([]);
+            }
+            setLoading(false);
+        };
+        getData();
+    }, []);
+
+    console.log('Data:', data);
     return (
         <Box sx={{ padding: 2, display: 'flex', justifyContent: 'center' }}>
             <Card sx={{ width: '100%', overflow: 'hidden', boxShadow: 3 }}>
@@ -30,20 +35,23 @@ const RecipeTable = (props: RecipeTableProps) => {
                     Recipe List
                 </Typography>
                 <div style={{ height: 400, width: '100%' }}>
-                    <DataGrid
-                        rows={data}
-                        columns={[
-                            { field: "recipeName", headerName: "Recipe Name", width: 200, sortable: true },
-                            { field: "ingredients", headerName: "Ingredients", width: 300, sortable: true },
-                            { field: "instructions", headerName: "Instructions", width: 300, sortable: true },
-                        ]}
-                        filterModel={{
-                            items: [{ field: 'recipeName', operator: 'contains', value: '' }],
-                        }}
-                        // pageSize={5}  // Pagination - Set number of rows per page
-                        checkboxSelection
-                        sx={{ height: 400, width: '100%' }} // Ensuring grid takes full width and height
-                    />
+                    {loading
+                        ? <CircularProgress />
+                        : <DataGrid
+                            rows={data}
+                            columns={[
+                                { field: "id", headerName: "ID", width: 100, sortable: true },
+                                { field: "recipeName", headerName: "Recipe Name", width: 200, sortable: true },
+                                { field: "instructions", headerName: "Description", width: 300, sortable: true },
+                                { field: "ingredients", headerName: "Servings", width: 300, sortable: true },
+                            ]}
+                            filterModel={{
+                                items: [{ field: 'recipeName', operator: 'contains' }],
+                            }}
+                            // pageSize={5}  // Pagination - Set number of rows per page
+                            checkboxSelection
+                            sx={{ height: 400, width: '100%' }} // Ensuring grid takes full width and height
+                        />}
                 </div>
             </Card>
         </Box>

@@ -15,12 +15,13 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.19.2",
+    "lodash": "^4.17.21",
     "massive": "^6.11.2",
     "openai": "^4.89.0",
     "pg": "^8.11.5"
   },
   "scripts": {
-    "start": "nodemon -L -e ts ./dist/index.js",
+    "start": "nodemon -L -e ts ./src/index.ts",
     "dev": "nodemon -L -e ts --exec \"npm run build && npm start\"",
     "build": "tsc",
     "db": "docker compose down && docker compose up"

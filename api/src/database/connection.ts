@@ -11,7 +11,10 @@ const dbConnectionInfo: ConnectionInfo = {
   host: process.env.DB_HOST,
   port: parseInt(process.env.DB_PORT || "3452"),
 };
-console.log('dbConnectionInfo', dbConnectionInfo);
+// console.log('dbConnectionInfo', dbConnectionInfo);
+
+export type Connection = massive.Database;
+
 export const connectDb = async () => {
   try {
     const db = await massive(dbConnectionInfo);
