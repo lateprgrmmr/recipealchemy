@@ -1,5 +1,5 @@
 import { makeStyles } from "@mui/styles";
-import Header from "./Header";
+// import Header from "./Header";
 import { Grid2 } from "@mui/material";
 import RecipeTable from "./RecipeTable";
 import { useEffect, useState } from "react";
@@ -55,8 +55,8 @@ const MainRouter = () => {
     console.log('Ingredient Types:', ingredientTypes);
     return (
         <Grid2 container className={`${classes.root}, ${classes.mainWrapper}`}>
-            <Header />
-            <Grid2 className="">
+            {/* <Header /> */}
+            <Grid2 className="fix-me-daddy">
                 <RecipeForm
                     cuisines={cuisines}
                     ingredientTypes={ingredientTypes}
