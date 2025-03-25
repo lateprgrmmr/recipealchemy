@@ -64,10 +64,10 @@ const RecipeTable = () => {
             headerName: 'Image',
             width: 200,
             sortable: true,
-            renderCell: (params) => params.row.image_url ? <img src={params.row.image_url} alt="Recipe" style={{ width: '100%' }} /> : null
+            renderCell: (params) => params.row.image_url ? <img src={params.row.image_url} alt="Recipe" style={{ width: 50, height: 50 }} /> : null
         }
     ]
-// https://www.recipetineats.com/tachyon/2018/07/Spaghetti-Bolognese.jpg?resize=900%2C1260&zoom=1
+    // https://www.recipetineats.com/tachyon/2018/07/Spaghetti-Bolognese.jpg?resize=900%2C1260&zoom=1
     console.log('Data:', data);
     return (
         <Box sx={{ padding: 2, display: 'flex', justifyContent: 'center' }}>

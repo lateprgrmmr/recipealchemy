@@ -20,6 +20,7 @@ import {
     Card,
     CardHeader,
     CardContent,
+    // ListSubheader,
 } from "@mui/material"
 import { Cuisine, Ingredient, IngredientType } from "../shared/types"
 
@@ -197,21 +198,21 @@ const RecipeForm = (props: FormProps) => {
                                         </Box>
                                     )}
                                 >
-                                    {allIngredients.map((group) => [
-                                        <MenuItem
-                                            key={`group-${group.id}`}
-                                            disabled
-                                            divider
-                                            sx={{
-                                                fontWeight: 'bold',
-                                                opacity: 1,
-                                                backgroundColor: 'rgba(0, 0, 0, 0.04)',
-                                                pointerEvents: 'none'
-                                            }}
-                                        >
-                                            {group.name}
-                                        </MenuItem>,
-                                    ])}
+                                    {selectedIngredientTypes.length === 0 ? (
+                                        allIngredients.map((ingredient) => (
+                                            <MenuItem key={ingredient.id} value={ingredient.name}>
+                                                <Checkbox checked={selectedIngredients.includes(ingredient.name)} />
+                                                <ListItemText primary={ingredient.name} />
+                                            </MenuItem>
+                                        ))) :
+                                        (allIngredients
+                                            .filter((ingredient) => selectedIngredientTypes.includes(ingredient.type.name)) // Filter by selected ingredient types
+                                            .map((ingredient) => (
+                                                <MenuItem key={ingredient.id} value={ingredient.name}>
+                                                    <Checkbox checked={selectedIngredients.includes(ingredient.name)} />
+                                                    <ListItemText primary={ingredient.name} />
+                                                </MenuItem>
+                                            )))}
                                 </Select>
                             </FormControl>
                         </Grid>
