@@ -1,12 +1,13 @@
 import { makeStyles } from "@mui/styles";
 // import Header from "./Header";
-import { Grid2 } from "@mui/material";
+import { Button, Grid2 } from "@mui/material";
 import RecipeTable from "./RecipeTable";
 import { useEffect, useState } from "react";
 import { Cuisine, Ingredient, IngredientType } from "../shared/types";
 import RecipeForm from "./RecipeForm";
 import { fetchIngredients, fetchIngredientTypes } from "../actions/Ingredients.action";
 import { fetchCuisines } from "../actions/Cuisine.action";
+import Header from "./Header";
 
 const useStyles = makeStyles(({
     root: {
@@ -26,6 +27,7 @@ const MainRouter = () => {
     const [ingredients, setIngredients] = useState<Ingredient[]>([]);
     const [ingredientTypes, setIngredientTypes] = useState<IngredientType[]>([]);
     const [cuisines, setCuisines] = useState<Cuisine[]>([]);
+    const [addRecipeDialogOpen, setAddRecipeDialogOpen] = useState(false);
 
     const classes = useStyles();
 
@@ -55,12 +57,22 @@ const MainRouter = () => {
     console.log('Ingredient Types:', ingredientTypes);
     return (
         <Grid2 container className={`${classes.root}, ${classes.mainWrapper}`}>
-            {/* <Header /> */}
+            <Header />
+            <Button
+                variant="contained"
+                color="primary"
+                onClick={() => setAddRecipeDialogOpen(true)}
+                style={{ margin: '16px' }}
+                >
+                Add Recipe
+            </Button>
             <Grid2 className="fix-me-daddy">
                 <RecipeForm
                     cuisines={cuisines}
                     ingredientTypes={ingredientTypes}
                     allIngredients={ingredients}
+                    isDialogOpen={addRecipeDialogOpen}
+                    onClose={() => setAddRecipeDialogOpen(false)}
                 />
             </Grid2>
             <Grid2 className="">

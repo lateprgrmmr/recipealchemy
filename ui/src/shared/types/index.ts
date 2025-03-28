@@ -12,8 +12,6 @@ export interface ItemType {
 
 export interface IngredientTag extends TagType {}
 
-export interface Ingredient extends ItemType {}
-
 export interface CuisineTag extends TagType{}
 
 export interface Cuisine extends ItemType {}
@@ -33,10 +31,11 @@ export interface IngredientType {
 export interface Ingredient {
     id: number;
     name: string;
-    type: IngredientType;
+    ingredient_type_id: number;
+    ingredient_type: string; 
+    quantity: number;
+    unit: string;
     otherType?: string;
-    created_at: Date;
-    updated_at: Date;
 }
 
 export interface Cuisine {

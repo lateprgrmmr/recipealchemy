@@ -2,7 +2,7 @@
 type FetchMethod = 'GET' | 'PATCH' | 'POST' | 'PUT' | 'DELETE' | 'DOWNLOAD';
 
 function buildRequest(
-    url: string,
+    _url: string,
     method: string,
     data: Record<string, any> | null = null,
     body?: FormData
