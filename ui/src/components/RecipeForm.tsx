@@ -76,7 +76,7 @@ const RecipeForm = (props: FormProps) => {
                 ingredients: []
             };
         });
-        
+
         // Group ingredients by type
         allIngredients.forEach(ingredient => {
             if (grouped[ingredient.ingredient_type_id]) {
@@ -216,20 +216,26 @@ const RecipeForm = (props: FormProps) => {
                                         )}
                                     >
                                         {selectedIngredientTypes.length === 0 ? (
-                                            allIngredients.map((ingredient) => (
-                                                <MenuItem key={ingredient.id} value={ingredient.name}>
-                                                    <Checkbox checked={selectedIngredients.includes(ingredient.name)} />
-                                                    <ListItemText primary={ingredient.name} />
-                                                </MenuItem>
-                                            ))) : (
-                                            allIngredients
-                                                .filter(ingredient => selectedIngredientTypes.includes(ingredient.ingredient_type))
+                                            groupedIngredients
                                                 .map((ingredient) => [
-                                                    <ListSubheader key={ingredient.ingredient_type_id}>{ingredient.ingredient_type}</ListSubheader>,
-                                                    <MenuItem key={ingredient.id} value={ingredient.name}>
-                                                        <Checkbox checked={selectedIngredients.includes(ingredient.name)} />
-                                                        <ListItemText primary={ingredient.name} />
-                                                    </MenuItem>
+                                                    <ListSubheader key={ingredient.typeId}>{ingredient.typeName}</ListSubheader>,
+                                                    ...ingredient.ingredients
+                                                        .map((ingredient) =>
+                                                            <MenuItem key={ingredient.id} value={ingredient.name}>
+                                                                <Checkbox checked={selectedIngredients.includes(ingredient.name)} />
+                                                                <ListItemText primary={ingredient.name} />
+                                                            </MenuItem>)
+                                                ])) : (
+                                            groupedIngredients
+                                                .map((ingredient) => [
+                                                    <ListSubheader key={ingredient.typeId}>{ingredient.typeName}</ListSubheader>,
+                                                    ...ingredient.ingredients
+                                                        .filter((ingredient) => selectedIngredientTypes.includes(ingredient.ingredient_type))
+                                                        .map((ingredient) =>
+                                                            <MenuItem key={ingredient.id} value={ingredient.name}>
+                                                                <Checkbox checked={selectedIngredients.includes(ingredient.name)} />
+                                                                <ListItemText primary={ingredient.name} />
+                                                            </MenuItem>)
                                                 ])
                                         )}
                                     </Select>
