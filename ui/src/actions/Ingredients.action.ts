@@ -1,5 +1,5 @@
 import { getFromApi } from ".";
-import { Ingredient } from "../shared/types";
+import { Ingredient, IngredientType } from "../shared/types";
 
 
 export const fetchIngredients = async () => {
@@ -18,7 +18,7 @@ export const fetchIngredients = async () => {
 export const fetchIngredientTypes = async () => {
     try {
         console.log('Fetching ingredient types...');
-        const ingredientTypes = await getFromApi<Ingredient[]>('http://localhost:5001/ingredients/types');
+        const ingredientTypes = await getFromApi<IngredientType[]>('http://localhost:5001/ingredients/types');
         if (!ingredientTypes) {
             throw new Error('Network response was not ok');
         }

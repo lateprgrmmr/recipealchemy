@@ -1,3 +1,4 @@
+import { IngredientTypeEnum } from "../utils";
 
 export interface TagType {
     id: number;
@@ -25,14 +26,14 @@ export interface TableData {
 
 export interface IngredientType {
     id: number;
-    name: string;
+    name: IngredientTypeEnum;
 }
 
 export interface Ingredient {
     id: number;
     name: string;
     ingredient_type_id: number;
-    ingredient_type: string; 
+    ingredient_type: IngredientTypeEnum; 
     quantity: number;
     unit: string;
     otherType?: string;

@@ -1,25 +1,20 @@
-import type React from "react"
 import { useState } from "react"
 import {
-    Box,
     FormControl,
-    InputLabel,
-    Select,
-    MenuItem,
-    Chip,
-    OutlinedInput,
     Typography,
-    SelectChangeEvent,
     Checkbox,
-    ListItemText,
     Grid,
     TextField,
-    ListSubheader,
     Dialog,
     Button,
-    // ListSubheader,
+    Autocomplete,
 } from "@mui/material"
 import { Cuisine, Ingredient, IngredientType } from "../shared/types"
+import { IngredientTypeDisplayLookup, IngredientTypeEnum } from "../shared/utils";
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import NewIngredientDialog from "./NewIngredient.dialog";
+
 
 interface FormProps {
     cuisines: Cuisine[];
@@ -33,17 +28,14 @@ const RecipeForm = (props: FormProps) => {
     const { cuisines, ingredientTypes, allIngredients, isDialogOpen, onClose } = props
     const [selectedCuisines, setSelectedCuisines] = useState<string[]>([])
     const [selectedIngredients, setSelectedIngredients] = useState<string[]>([])
-    const [selectedIngredientTypes, setSelectedIngredientTypes] = useState<string[]>([])
+    const [selectedIngredientTypes, setSelectedIngredientTypes] = useState<IngredientTypeEnum[]>([])
     const [recipeName, setRecipeName] = useState("")
     const [description, setDescription] = useState("")
     const [instructions, setInstructions] = useState("")
+    const [isNewIngredientDialogOpen, setIsNewIngredientDialogOpen] = useState(false)
 
-    const handleChange = <T,>(
-        event: SelectChangeEvent<T[]>,
-        setter: React.Dispatch<React.SetStateAction<T[]>>,
-    ) => {
-        const value = event.target.value as T[]
-        setter(value)
+    const handleOpenNewIngredientDialog = () => {
+        setIsNewIngredientDialogOpen(true)
     }
 
     const getSelectionJson = () => {
@@ -64,7 +56,7 @@ const RecipeForm = (props: FormProps) => {
     const getGroupedIngredients = () => {
         const grouped: Record<number, {
             typeId: number,
-            typeName: string,
+            typeName: IngredientTypeEnum,
             ingredients: Ingredient[]
         }> = {};
 
@@ -109,169 +101,186 @@ const RecipeForm = (props: FormProps) => {
             onClose={handleCloseDialog}
             scroll="body"
         >
-            <Grid id="fuckall" sx={{ padding: 2 }}>
+            <Grid container id="details-container" sx={{ padding: 2 }}>
                 <Typography variant="h6" gutterBottom>
                     Recipe Details
                 </Typography>
                 <form>
-                    <Grid>
-                        <Grid container xs={12} sm={12} spacing={2}>
-                            <Grid item xs={6}>
-                                <TextField
-                                    fullWidth
-                                    label="Recipe Name"
-                                    value={recipeName}
-                                    onChange={(e) => setRecipeName(e.target.value)}
-                                    margin="normal"
-                                />
-                                <TextField
-                                    fullWidth
-                                    label="Description"
-                                    value={description}
-                                    onChange={(e) => setDescription(e.target.value)}
-                                    margin="normal"
-                                    multiline
-                                    rows={3}
-                                />
-                                <TextField
-                                    fullWidth
-                                    label="Instructions"
-                                    value={instructions}
-                                    onChange={(e) => setInstructions(e.target.value)}
-                                    margin="normal"
-                                    multiline
-                                    rows={5}
-                                />
-                            </Grid>
-                            <Grid item xs={6}>
-                                <FormControl fullWidth margin="normal">
-                                    <InputLabel id="cuisines-label">Cuisines</InputLabel>
-                                    <Select
-                                        labelId="cuisines-label"
-                                        multiple
-                                        value={selectedCuisines}
-                                        onChange={(e) => handleChange<string>(e, setSelectedCuisines)}
-                                        input={<OutlinedInput label="Cuisines" />}
-                                        renderValue={(selected) => (
-                                            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                                                {(selected).map((cuisine) => (
-                                                    <Chip key={cuisine} label={cuisine} />
-                                                ))}
-                                            </Box>
-                                        )}
-                                    >
-                                        {cuisines.map((cuisine) => (
-                                            <MenuItem key={cuisine.id} value={cuisine.name}>
-                                                <Checkbox checked={selectedCuisines.includes(cuisine.name)} />
-                                                <ListItemText primary={cuisine.name} />
-                                            </MenuItem>
-                                        ))}
-                                    </Select>
-                                </FormControl>
+                    <Grid spacing={2}>
+                        <TextField
+                            fullWidth
+                            label="Recipe Name"
+                            value={recipeName}
+                            onChange={(e) => setRecipeName(e.target.value)}
+                            margin="normal"
+                        />
+                        <TextField
+                            fullWidth
+                            label="Description"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            margin="normal"
+                            multiline
+                            rows={3}
+                        />
+                        <Grid >
+                            <FormControl fullWidth margin="normal">
+                                <Autocomplete
+                                    multiple
+                                    id="cuisines-autocomplete"
+                                    options={cuisines}
+                                    disableCloseOnSelect
+                                    getOptionLabel={(option) => option.name}
+                                    renderOption={(props, option, { selected }) => {
+                                        const { key, ...optionProps } = props;
+                                        return (
+                                            <li {...optionProps} key={key}>
+                                                <Checkbox
+                                                    icon={<CheckBoxOutlineBlankIcon />}
+                                                    checkedIcon={<CheckBoxIcon />}
+                                                    style={{ marginRight: 8 }}
+                                                    checked={selected}
+                                                />
+                                                {option.name}
+                                            </li>
+                                        );
 
-                                <FormControl fullWidth margin="normal">
-                                    <InputLabel id="ingredient-types-label">Ingredient Types</InputLabel>
-                                    <Select
-                                        labelId="ingredient-types-label"
-                                        multiple
-                                        value={selectedIngredientTypes}
-                                        onChange={(e) => handleChange<string>(e, setSelectedIngredientTypes)}
-                                        input={<OutlinedInput label="Ingredient Types" />}
-                                        renderValue={(selected) => (
-                                            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                                                {selected.map((value) => (
-                                                    <Chip key={value} label={value} />
-                                                ))}
-                                            </Box>
-                                        )}
-                                    >
-                                        {ingredientTypes?.length > 0 ? (
-                                            ingredientTypes.map((type) => (
-                                                <MenuItem key={type.id} value={type.name}>
-                                                    <Checkbox checked={selectedIngredientTypes.includes(type.name)} />
-                                                    <ListItemText primary={type.name} />
-                                                </MenuItem>
-                                            ))
-                                        ) : (
-                                            <MenuItem disabled>No options</MenuItem>
-                                        )}
-                                    </Select>
-                                </FormControl>
+                                    }}
+                                    style={{ width: "100%", marginTop: "10px" }}
+                                    renderInput={(params) => (
+                                        <TextField {...params} label="Cuisines" placeholder="Select Cuisines" />
+                                    )}
+                                />
+                            </FormControl>
 
+                            <FormControl fullWidth margin="normal">
+                                <Autocomplete
+                                    multiple
+                                    id="ingredient-types-autocomplete"
+                                    options={ingredientTypes}
+                                    disableCloseOnSelect
+                                    getOptionLabel={(option) => IngredientTypeDisplayLookup[option.name]}
+                                    renderOption={(props, option, { }) => {
+                                        const { key, ...optionProps } = props;
+                                        return (
+                                            <li {...optionProps} key={key}>
+                                                <Checkbox checked={selectedIngredientTypes.includes(option.name)} />
+                                                {IngredientTypeDisplayLookup[option.name]}
+                                            </li>
+                                        );
 
-                                <FormControl fullWidth margin="normal">
-                                    <InputLabel id="ingredients-label">Ingredients</InputLabel>
-                                    <Select
-                                        labelId="ingredients-label"
-                                        multiple
-                                        value={selectedIngredients}
-                                        onChange={(e) => handleChange<string>(e, setSelectedIngredients)}
-                                        input={<OutlinedInput label="Ingredients" />}
-                                        renderValue={(selected) => (
-                                            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                                                {(selected).map((value) => (
-                                                    <Chip key={value} label={value} />
-                                                ))}
-                                            </Box>
-                                        )}
-                                    >
-                                        {selectedIngredientTypes.length === 0 ? (
-                                            groupedIngredients
-                                                .map((ingredient) => [
-                                                    <ListSubheader key={ingredient.typeId}>{ingredient.typeName}</ListSubheader>,
-                                                    ...ingredient.ingredients
-                                                        .map((ingredient) =>
-                                                            <MenuItem key={ingredient.id} value={ingredient.name}>
-                                                                <Checkbox checked={selectedIngredients.includes(ingredient.name)} />
-                                                                <ListItemText primary={ingredient.name} />
-                                                            </MenuItem>)
-                                                ])) : (
-                                            groupedIngredients
-                                                .map((ingredient) => [
-                                                    <ListSubheader key={ingredient.typeId}>{ingredient.typeName}</ListSubheader>,
-                                                    ...ingredient.ingredients
-                                                        .filter((ingredient) => selectedIngredientTypes.includes(ingredient.ingredient_type))
-                                                        .map((ingredient) =>
-                                                            <MenuItem key={ingredient.id} value={ingredient.name}>
-                                                                <Checkbox checked={selectedIngredients.includes(ingredient.name)} />
-                                                                <ListItemText primary={ingredient.name} />
-                                                            </MenuItem>)
-                                                ])
-                                        )}
-                                    </Select>
-                                </FormControl>
-                                <FormControl fullWidth margin="normal" style={{ height: "50px" }}>
-                                    <Button
-                                        title="Add Recipe"
-                                        variant="contained"
-                                        color="primary"
-                                        style={{ height: "50%" }}
-                                        onClick={() => {
-                                            console.log(getSelectionJson())
-                                        }}
-                                    />
-                                </FormControl>
-                                <FormControl fullWidth margin="normal" style={{ height: "50px" }}>
-                                    <Button
-                                        title="Use AI to Generate Recipe"
-                                        variant="contained"
-                                        color="primary"
-                                        style={{ height: "50%" }}
-                                        onClick={handleCloseDialog}
-                                    />
-                                </FormControl>
-                            </Grid>
+                                    }}
+                                    style={{ width: "100%", marginTop: "10px" }}
+                                    renderInput={(params) => (
+                                        <TextField {...params} label="Ingredient Types" placeholder="Select Ingredient Types" />
+                                    )}
+                                    onChange={(_, value) => {
+                                        const selectedTypes = value.map((type) => type.name as IngredientTypeEnum);
+                                        setSelectedIngredientTypes(selectedTypes);
+                                    }}
+                                />
+                            </FormControl>
+
+                            <FormControl fullWidth margin="normal">
+                                <Autocomplete
+                                    multiple
+                                    id="ingredients-autocomplete"
+                                    options={allIngredients}
+                                    disableCloseOnSelect
+                                    getOptionLabel={(option) => option.name}
+                                    renderOption={(props, option, { selected }) => {
+                                        const { key, ...optionProps } = props;
+                                        return (
+                                            <li {...optionProps} key={key}>
+                                                <Checkbox
+                                                    icon={<CheckBoxOutlineBlankIcon />}
+                                                    checkedIcon={<CheckBoxIcon />}
+                                                    style={{ marginRight: 8 }}
+                                                    checked={selected}
+                                                />
+                                                {option.name}
+                                            </li>
+                                        );
+
+                                    }}
+                                    style={{ width: "100%", marginTop: "10px" }}
+                                    renderInput={(params) => (
+                                        <TextField {...params} label="Ingredients" placeholder="Select Ingredients" />
+                                    )}
+                                />
+
+                                <Button
+                                    variant="outlined"
+                                    color="primary"
+                                    style={{ marginTop: "10px", width: "100%" }}
+                                    onClick={handleOpenNewIngredientDialog}
+                                >
+                                    Need to add a missing ingredient?
+                                </Button>
+
+                            </FormControl>
+                            <TextField
+                                fullWidth
+                                label="Instructions"
+                                value={instructions}
+                                onChange={(e) => setInstructions(e.target.value)}
+                                margin="normal"
+                                multiline
+                                rows={5}
+                            />
+                        </Grid>
+                        <Grid style={{ display: "flex", flexDirection: "row", gap: "10px" }}>
+                            <FormControl fullWidth margin="normal" style={{ height: "150px" }}>
+                                <Button
+                                    title="Add Recipe"
+                                    variant="contained"
+                                    color="primary"
+                                    style={{ height: "50%" }}
+                                    onClick={() => {
+                                        console.log(getSelectionJson())
+                                    }}
+                                >
+                                    Add Recipe
+                                </Button>
+                            </FormControl>
+                            <FormControl fullWidth margin="normal" style={{ height: "150px" }}>
+                                <Button
+                                    title="Use AI to Generate Recipe"
+                                    variant="contained"
+                                    color="primary"
+                                    style={{ height: "50%" }}
+                                    onClick={handleCloseDialog}
+                                >
+                                    Use AI to Generate Recipe
+                                </Button>
+                            </FormControl>
                         </Grid>
                     </Grid>
                 </form>
 
-                <Grid sx={{ marginTop: 3, padding: 2 }}>
-                    <Typography variant="h6" gutterBottom>
-                        Selection JSON:
-                    </Typography>
-                    <pre style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}>{getSelectionJson()}</pre>
+                <Grid container justifyContent={"center"} alignItems="flex-end" sx={{ marginTop: 3, padding: 2 }}>
+                    <Grid size={12} sx={{ padding: 2 }}>
+                        <Typography variant="h6" gutterBottom>
+                            Selection JSON:
+                        </Typography>
+                        <pre style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}>{getSelectionJson()}</pre>
+                    </Grid>
+                    <Grid size={12} sx={{ padding: 2 }}>
+                        <Button
+                            variant="outlined"
+                            color="secondary"
+                            onClick={handleCloseDialog}
+                            sx={{ alignSelf: "flex-end" }}
+                        >
+                            Bail
+                        </Button>
+                    </Grid>
                 </Grid>
             </Grid >
+            <NewIngredientDialog
+                isOpen={isNewIngredientDialogOpen}
+                onClose={() => setIsNewIngredientDialogOpen(false)}
+            />
         </Dialog>
     )
 }

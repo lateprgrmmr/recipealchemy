@@ -1,6 +1,6 @@
 import { makeStyles } from "@mui/styles";
 // import Header from "./Header";
-import { Button, Grid2 } from "@mui/material";
+import { Button, Grid } from "@mui/material";
 import RecipeTable from "./RecipeTable";
 import { useEffect, useState } from "react";
 import { Cuisine, Ingredient, IngredientType } from "../shared/types";
@@ -52,11 +52,8 @@ const MainRouter = () => {
         getData();
     }, []);
 
-    console.log('Ingredients:', ingredients);
-    console.log('Cuisines:', cuisines);
-    console.log('Ingredient Types:', ingredientTypes);
     return (
-        <Grid2 container className={`${classes.root}, ${classes.mainWrapper}`}>
+        <Grid container className={`${classes.root}, ${classes.mainWrapper}`}>
             <Header />
             <Button
                 variant="contained"
@@ -66,7 +63,7 @@ const MainRouter = () => {
                 >
                 Add Recipe
             </Button>
-            <Grid2 className="fix-me-daddy">
+            <Grid className="fix-me-daddy">
                 <RecipeForm
                     cuisines={cuisines}
                     ingredientTypes={ingredientTypes}
@@ -74,11 +71,11 @@ const MainRouter = () => {
                     isDialogOpen={addRecipeDialogOpen}
                     onClose={() => setAddRecipeDialogOpen(false)}
                 />
-            </Grid2>
-            <Grid2 className="">
+            </Grid>
+            <Grid className="">
                 <RecipeTable />
-            </Grid2>
-        </Grid2>
+            </Grid>
+        </Grid>
     );
 }
 
